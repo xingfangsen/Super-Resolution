@@ -83,11 +83,11 @@ def getSSIM(source, detect):
     det = np.array(detect)
 
     # 将两张输入的图像转化为灰度图
-    graySrc = cv2.cvtColor(src, cv2.COLOR_RGB2GRAY)
-    grayDet = cv2.cvtColor(det, cv2.COLOR_RGB2GRAY)
+    # graySrc = cv2.cvtColor(src, cv2.COLOR_RGB2GRAY)
+    # grayDet = cv2.cvtColor(det, cv2.COLOR_RGB2GRAY)
 
     # 计算两张图片之间的结构相似性
-    (score, diff) = compare_ssim(graySrc, grayDet, full=True)
+    (score, diff) = compare_ssim(src, det, full=True)
     diff = (diff * 255).astype("uint8")
     print("SSIM: {}".format(score))
     # print("DIFF: {}".format(diff))

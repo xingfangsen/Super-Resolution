@@ -146,14 +146,13 @@ def double3insert(img, factor):
 # 初始化图像 #
 #############
 def generateimage(img):
-    img = img.convert('YCbCr')
+    img = img.convert('L')
     temp = np.array(img)
     temp = 1.0 * temp / 255
     size = temp.shape
     for i in range(size[0]):
         for j in range(size[1]):
-            for k in range(size[2]):
-                temp[i][j][k] = round(temp[i][j][k], 4)
+            temp[i][j] = round(temp[i][j], 4)
     return temp
 
 
@@ -177,13 +176,3 @@ def getmin(img):
         if minnum > min(img[i]):
             minnum = min(img[i])
     return minnum
-
-
-###############
-# 图像的灰度化 #
-###############
-def rgb2gray(image):
-    img = generateimage(image)
-    img = selectimageline(img, 0)
-
-    return img

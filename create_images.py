@@ -43,7 +43,7 @@ def create_images(image, factor, imagenumber):
             return num
 
     for num in range(imagenumber):
-        emptyimage = np.zeros((height, width, 3), 'uint8')
+        emptyimage = np.zeros((height, width), 'uint8')
         x = int(shift[num][0])
         x1 = shift[num][0] - x
         y = int(shift[num][1])
@@ -57,14 +57,12 @@ def create_images(image, factor, imagenumber):
                             heightoverflow(n1 + x + 1), widthoverflow(n2 + y + 1)] * x1 * y1 + \
                               img[heightoverflow(n1 + x), widthoverflow(n2 + y + 1)] * (1 - x1) * y1 + img[
                                   heightoverflow(n1 + x + 1), widthoverflow(n2 + y)] * x1 * (1 - y1)
-                sum[0] = float(sum[0]) / factor / factor
-                sum[1] = float(sum[1]) / factor / factor
-                sum[2] = float(sum[2]) / factor / factor
+                sum = float(sum) / factor / factor
                 emptyimage[m1, m2] = sum
-        temp = Image.fromarray(emptyimage, mode='RGB')
+        temp = Image.fromarray(emptyimage, mode='L')
         temp = temp.point(lambda p: p * 3.0)  # 使图像变亮 3 倍
 
-        temp.save('/Users/chosenone/Desktop/made/yuan/img' + str(num + 1) + '.tif')
+        temp.save('C:\\Users\\HP\\Desktop\\test\\img' + str(num + 1) + '.tif')
         result.append(temp)
 
     return result,shift

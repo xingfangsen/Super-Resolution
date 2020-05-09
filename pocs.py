@@ -17,17 +17,9 @@ import cv2
 ######################
 def pocs(images, delta_est, factor):
     img = images[0]
-    img = generateimage(img)
+    img1 = generateimage(img)
 
-    # 分离图像分量，仅对亮度分量进行POCS算法处理
-    img1 = selectimageline(img, 0)
-    cb_temp = selectimageline(img, 1)
-    cr_temp = selectimageline(img, 2)
-
-    # python自带三次插值
-    im_color1 = scipy.ndimage.zoom(cb_temp, factor, order=1)
-    im_color2 = scipy.ndimage.zoom(cr_temp, factor, order=1)
-
+    # 对灰度图进行POCS算法处理
     temp = zoomzero(img1, factor)   #将LR图像补零插值
     y = np.zeros(temp.shape)
     coord = temp.nonzero()     #找出非零元素的坐标
@@ -35,7 +27,6 @@ def pocs(images, delta_est, factor):
 
     for i in range(1, len(images)):
         tempimage = generateimage(images[i])
-        tempimage = selectimageline(tempimage, 0)
         temp = zoomzero(tempimage, factor)
 
         temp = roll(temp, int(round(factor * delta_est[i, 1])), 1)
@@ -58,7 +49,6 @@ def pocs(images, delta_est, factor):
         y = cv2.filter2D(y, -1, blur)
         for i in range(len(images) - 1, -1, -1):
             tempimage = generateimage(images[i])
-            tempimage = selectimageline(tempimage, 0)
             temp = zoomzero(tempimage, factor)
 
             temp = roll(temp, int(round(factor * delta_est[i, 1])), 1)
@@ -83,19 +73,14 @@ def pocs(images, delta_est, factor):
     for i in range(height):
         for j in range(width):
             y[i][j] = y[i][j] * 255
-            im_color1[i][j] = im_color1[i][j] * 255
-            im_color2[i][j] = im_color2[i][j] * 255
 
-    temp_result = zeros((height, width, 3), 'uint8')
+    temp_result = zeros((height, width), 'uint8')
     for i in range(height):
         for j in range(width):
-            temp_result[i][j][0] = y[i][j]
-            temp_result[i][j][1] = im_color1[i][j]
-            temp_result[i][j][2] = im_color2[i][j]
+            temp_result[i][j] = y[i][j]
 
-    result = Image.fromarray(temp_result, mode='YCbCr')
-    result = result.convert('RGB')
+    result = Image.fromarray(temp_result, mode='L')
 
-    print ("the " + str(iter) + " accuracy is: " + str(1 - round(delta, 7)))
+    print("the " + str(iter) + " accuracy is: " + str(1 - round(delta, 7)))
 
     return result
